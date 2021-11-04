@@ -1,4 +1,4 @@
-﻿== Exploring Stackoverflow
+﻿== Exploring Stack Overflow
 :images: {img}
 
 Every developer has a tab open https://stackoverflow.com/[Stack Overflow^], the massively popular question-and-answer site. This dataset explores users, questions, answers, comments, and tags related to the `neo4j`- and `cypher`- tagged questions on Stack Overflow.
