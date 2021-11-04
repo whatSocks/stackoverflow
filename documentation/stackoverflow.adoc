@@ -236,6 +236,43 @@ MERGE (t1)-[r:OCCURRED]-(t2) SET r.freq=freq
 RETURN count(*)
 ----
 
+== Tag Similarity
+
+We can explore similarity computation of tags based on the questions they were attached to.
+
+We started with the Jaccard Similarity which is based on the intersection and the total size of two sets:
+
+----
+jaccard(A,B) = ∣A ∩ B∣ / ( ∣A∣ + ∣B∣ - ∣A ∩ B| )
+jaccard(A,B) = size(intersection(A,B)) / (size(B) + size(B) - size(intersection(A,B)))
+----
+
+We can run Jaccard Similarity in Neo4j as a function. 
+A simple version as an exercise:
+
+[source,cypher]
+----
+RETURN algo.similarity.jaccard([1,2,3], [1,2,4,5]) AS similarity
+----
+
+Which returns `0.4` (i.e. `2/(3+4-2)`).
+
+Finding the Jaccard similarity between tags:
+
+[source,cypher]
+---
+MATCH (q1:Question)-[:TAGGED]->(tag1)
+WITH tag1, collect(id(q1)) AS t1Question
+MATCH (q2:Question)-[:TAGGED]->(tag2)
+WITH tag1, t1Question, tag2, collect(id(q2)) AS t2Question
+WHERE id(tag1) > id(tag2)
+RETURN tag1.name AS from,
+       tag2.name AS to,
+       gds.alpha.similarity.jaccard(t1Question, t2Question) AS similarity
+ORDER BY similarity DESC
+LIMIT 20
+---
+
 == Virtual Graphs: Social Network
 
 We can do something similar for commenters - what users keep on running into each other in the comments? 
